@@ -3,6 +3,12 @@ name: Module CI
 
 on:
   workflow_dispatch:
+    inputs:
+      hotfix:
+        description: "Is this a hotfix(y/N)"
+        default: "N"
+        required: false
+
   push:
     paths-ignore:
       - '.github/**'
@@ -56,6 +62,11 @@ jobs:
       - name: Get changelog
         id: changelog
         uses: VirtoCommerce/vc-github-actions/changelog-generator@master
+
+      - name: Test Step
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.hotfix == 'y' }}
+        shell: pwsh
+        run: Write-Output "Ok"
 
       - name: Get Image Version
         uses: VirtoCommerce/vc-github-actions/get-image-version@master
